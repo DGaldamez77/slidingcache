@@ -1,2 +1,2 @@
-# slilding-cache
+# Slilding Cache
 Sliding Expiration Cache (ncsa)
