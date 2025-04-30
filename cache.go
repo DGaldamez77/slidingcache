@@ -61,7 +61,7 @@ func (c *Cache) Add(key string, value interface{}, duration *time.Duration) {
 		expiration: expiration,
 	}
 
-	fmt.Println("Item added to cache", key)
+	fmt.Println("Item added to cache", key, "expires at", expiration)
 }
 
 func (c *Cache) Get(key string) (interface{}, error) {
@@ -74,8 +74,9 @@ func (c *Cache) Get(key string) (interface{}, error) {
 		return nil, errors.New("key not found")
 	}
 
+	// this is for the gap between expiraton and the hunt loop executing
 	if time.Now().After(item.expiration) {
-		return nil, errors.New("key expired")
+		return nil, errors.New("key already expired")
 	}
 
 	return item.value, nil
@@ -120,10 +121,10 @@ func (c *Cache) removeExpiredItems() {
 	// traverse the items in the cache and delete all the ones which expiration
 	// are past the current time
 	for k, v := range c.items {
-		if v.expiration.After(time.Now()) {
+		if time.Now().After(v.expiration) {
 			delete(c.items, k)
 
-			fmt.Println("Item expired", k)
+			fmt.Println("Item expired", k, v.expiration)
 		}
 	}
 }
