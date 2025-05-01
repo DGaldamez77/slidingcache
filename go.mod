@@ -1,4 +1,4 @@
-module github.com/DGaldamez77/slildingcache
+module github.com/DGaldamez77/slidingcache
 
 go 1.24.2
 

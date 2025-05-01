@@ -1,10 +1,11 @@
 package cache
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/DGaldamez77/slidingcache/util"
 )
 
 var (
@@ -80,12 +81,12 @@ func (c *Cache) Get(key string) (interface{}, error) {
 
 	item, found := c.items[key]
 	if !found {
-		return nil, errors.New("key not found")
+		return nil, util.ErrNoKeyFound
 	}
 
 	// this is for the gap between expiraton and the hunt loop executing
 	if time.Now().After(item.expiration) {
-		return nil, errors.New("key already expired")
+		return nil, util.ErrKeyAlreadyExpired
 	}
 
 	return item.value, nil
