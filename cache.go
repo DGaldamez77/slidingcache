@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DGaldamez77/slidingcache/util"
+	"github.com/dgaldamez77/slidingcache/util"
 )
 
 var (
