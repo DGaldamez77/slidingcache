@@ -12,18 +12,27 @@ var (
 	expiredLoopDuration = 1 * time.Second
 )
 
-type Cache struct {
-	duration time.Duration
-	items    map[string]cacheItem
-	mutex    sync.RWMutex
-	done     chan struct{}
-	once     sync.Once
-}
+type (
+	ICache interface {
+		Add(key string, value interface{}, duration *time.Duration)
+		Get(key string) (interface{}, error)
+		Delete(key string)
+		Close()
+	}
 
-type cacheItem struct {
-	value      interface{}
-	expiration time.Time
-}
+	Cache struct {
+		duration time.Duration
+		items    map[string]cacheItem
+		mutex    sync.RWMutex
+		done     chan struct{}
+		once     sync.Once
+	}
+
+	cacheItem struct {
+		value      interface{}
+		expiration time.Time
+	}
+)
 
 func NewCache(duration *time.Duration) *Cache {
 	c := &Cache{
@@ -93,6 +102,7 @@ func (c *Cache) Delete(key string) {
 }
 
 func (c *Cache) Close() {
+	// end loop in RemovedExpireitems
 	c.once.Do(func() {
 		close(c.done)
 	})
